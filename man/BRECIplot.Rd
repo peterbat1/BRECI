@@ -59,7 +59,7 @@ The two rasters to be compared using this function MUST:
  from 0 to 1 (as in MaxEnt logistic output).
 }
 
-\emph{scaleFactor} determines the way in which values in bins are computed. Selecting 'ras1Bins' computes the value for a bin as a fraction of the number of pixels in the first raster. Values in a bin can therfore be greater than +/- 1, and are greatly exagerated in size.
+\emph{scaleFactor} determines the way in which values in bins are computed. Selecting 'ras1Bins' computes the value for a bin as a fraction of the number of pixels in the first raster. Values in a bin can therfore be greater than +/- 1, and are \emph{greatly} exaggerated in size.
 
 For the ith bin:
 
