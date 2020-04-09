@@ -3,7 +3,7 @@ Binned Relative Environmental Change Indicator (BRECI) for displaying difference
 
 This little R-package produces plots which give an intuitive representation of the nature of differences between rasters produced by Ecological Niche Models (ENMs). ENMs are also frequently referred to as Species Distribution Models (SDMs), Ecological Niche Models, or habitat suitability models.
 
-The purpose of the package is to help you communicate how two rasters differ. It does not provide statistical measures of difference. It is purely an aid to communication and to give some indication of the nture of differences.
+The purpose of the package is to help you communicate how two rasters differ. It does not provide statistical measures of difference. It is purely an aid to communication and to give some indication of the nature of differences.
 
 ## Installing from this GitHub repository
 
