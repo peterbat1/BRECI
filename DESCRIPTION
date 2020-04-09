@@ -1,0 +1,16 @@
+Package: BRECI
+Title: Make Binned Relative Environmental Change Indicator Plots
+Version: 0.9
+Authors@R: 
+    person(given = "Peter D",
+           family = "Wilson",
+           role = c("aut", "cre"),
+           email = "peterdonaldwilson@gmail.com",
+           comment = c(ORCID = "0000-0001-7375-0791"))
+Imports: raster,
+         png
+Description: What the package does (one paragraph).
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.2
