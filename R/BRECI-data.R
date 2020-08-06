@@ -1,6 +1,6 @@
 #' Example rasters
 #'
-#' Rasters for a fitted MaxEnt model nad its projeciton onto
+#' Rasters for a fitted MaxEnt model and its projeciton onto
 #' predicted climate in 2050.
 #'
 #' @docType data
