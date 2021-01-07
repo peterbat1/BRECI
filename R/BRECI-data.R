@@ -1,7 +1,7 @@
 #' Example rasters
 #'
-#' Rasters for a fitted MaxEnt model and its projection onto
-#' predicted climate in 2050.
+#' A set of small simulated rasters as examples of fitted ENMs and their projection onto
+#' predicted climate.
 #'
 #' @docType data
 #'
