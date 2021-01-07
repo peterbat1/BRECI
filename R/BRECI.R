@@ -98,13 +98,8 @@ BRECIplot <- function(ras1 = NULL, ras2 = NULL, outFilename = NULL, saveToFile =
   if ((is.null(ras2)) || (class(ras2) != "RasterLayer"))
     stop("An object of class 'RasterLayer' is required for parameter 'ras2'")
 
-<<<<<<< HEAD
-  if (raster::extent(ras1) != raster::extent(ras2))
-    stop("Spatial extent of 'ras1' and 'ras2' must be the same")
-=======
   if (!all(format(raster::extent(ras1), nsmall = 5) == format(raster::extent(ras2), nsmall = 5)))
     stop("Spatial extents of 'ras1' and 'ras2' must be the same")
->>>>>>> 98a9ec1a0f596c15912c3432bf6b22d604cdd48a
 
   if (!all(format(raster::res(ras1), nsmall = 5) == format(raster::res(ras2), nsmall = 5)))
     stop("Spatial resolution (grid cell size) of 'ras1' and 'ras2' must be the same")
