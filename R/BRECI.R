@@ -46,30 +46,29 @@
 #' @export
 #'
 #' @details {
-#' The two rasters to be compared using this function MUST:
+#' The two rasters to be compared using this function \emph{MUST} have:
 #' \enumerate{
-#'  \item Have the same extent and resolution (grid cell size); and,
+#'  \item the same extent and resolution (grid cell size); and,
 #'
-#'  \item Have values in gridcells scaled in the same way. The rasters may be
+#'  \item values in gridcells scaled in the same way. The rasters may be
 #'  normalised values such that the sum of grid cell values across the extent = 1
 #'  (as in MaxEnt raw output) or adjusted so that values in a grid cell may range
-#'  from 0 to 1 (as in MaxEnt logistic output).
+#'  from 0 to 1 (as in MaxEnt logistic and cloglog output, and many other modelling methods).
 #'}
 #'
-#' \emph{scaleFactor} determines the way in which values in bins are computed. Selecting 'ras1Bins' computes the value for a bin as a fraction of the number of pixels in the first raster. Values in a bin can therfore be greater than +/- 1, and are \emph{greatly} exaggerated in size.
+#' \emph{scaleFactor} determines the way in which values in bins are computed. Selecting 'ras1Bins' computes the value for a bin as a fraction of the number of pixels in the first raster. Values in a bin can therefore be greater than +/- 1, and are \emph{greatly} exaggerated in size.
 #'
 #' For the ith bin:
 #'
 #'  \verb{    Bin_size(i) = [ras2_count(i) - ras1_count(i)]/ras1_count(i)}
 #'
-#' Selecting 'numCells' computes the difference in the number of cells in that bin as a proportion of the total number of cells in the raster extent.
+#' Selecting 'numCells' (the default value) computes the difference in the number of cells in that bin as a proportion of the total number of cells in the raster extent.
 #'
 #' For the ith bin:
 #'
 #'   \verb{    Bin_size(i) = [ras2_count(i) - ras1_count(i)]/Total_number_cells}
 #'
-#' This function is based on code developed in April 2017 but the first approach to this kind of index was developed in 2009-2010. Code for that earlier method
-#' is no longer available.
+#' This function is based on code developed in April 2017 but the first approach to this kind of index was developed in 2009-2010.
 #'
 #' }
 #'
@@ -79,7 +78,7 @@
 #' # Default plot
 #' BRECIplot(ras1, ras2, plotTitle = "Acacia linifolia", outFilename = "~/testPlot.png")
 #'
-#' # A colour-blind freindly palette derived from info found here:
+#' # A colour-blind friendly palette derived from info found here:
 #' # http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
 #' # last accessed 2020-03-14
 #' colTable <- matrix(c(213,94,0,204,121,167,240,228,66,0,158,115,0,114,178), 5, 3, byrow = TRUE)/256
@@ -100,7 +99,7 @@ BRECIplot <- function(ras1 = NULL, ras2 = NULL, outFilename = NULL, saveToFile =
     stop("An object of class 'RasterLayer' is required for parameter 'ras2'")
 
   if (raster::extent(ras1) != raster::extent(ras2))
-    stop("Spatial extents of 'ras1' and 'ras2' must be the same")
+    stop("Spatial extent of 'ras1' and 'ras2' must be the same")
 
   if (!all(raster::res(ras1) == raster::res(ras2)))
     stop("Spatial resolution (grid cell size) of 'ras1' and 'ras2' must be the same")
@@ -114,19 +113,15 @@ BRECIplot <- function(ras1 = NULL, ras2 = NULL, outFilename = NULL, saveToFile =
   if (!(scaleFactor %in% c("ras1Bins", "numCells")))
     stop("scaleFactor must be one of 'ras1Bins' or 'numCells'")
 
-  # Set plot parameters
-  #brks <- c(0, 0.2, 0.4, 0.6, 0.8, 1)
-  #binNames <- c("V. low", "Low", "Med.", "High", "V. high")
   binNamePos <- brks[1:(length(brks) - 1)] + diff(brks)/2
-  #binCols <- c("dodgerblue", "darkolivegreen2", "gold1", "orange", "red")
-
-  #op <- par(oma = c(0,0,0,0), mar = c(2,2,2,0.1))
 
   ras1_values <- raster::values(ras1)
-  ras1_values <- ras1_values[-which(is.na(ras1_values))]
+  na_ind <- which(is.na(ras1_values))
+  if (length(na_ind) > 0) ras1_values <- ras1_values[-na_ind]
 
   ras2_values <- raster::values(ras2)
-  ras2_values <- ras2_values[-which(is.na(ras2_values))]
+  na_ind <- which(is.na(ras2_values))
+  if (length(na_ind) > 0) ras2_values <- ras2_values[-na_ind]
 
   # Classify values by bin
   ras1_cut <- cut.default(ras1_values, breaks = brks)
@@ -191,10 +186,8 @@ BRECIplot <- function(ras1 = NULL, ras2 = NULL, outFilename = NULL, saveToFile =
   rect(-biggestDiff, brks[3], biggestDiff, brks[4], col = "grey90", border = NA)
   rect(-biggestDiff, brks[5], biggestDiff, brks[6], col = "grey90", border = NA)
 
-  #if (plotWidth <= 250)
-    mtext(binNames, at = binNamePos, side = 2, cex = 0.8, las = 2, line = -0.1)
-  #else
-  #  mtext(binNames, at = binNamePos, side = 2, las = 2, line = -0.1)
+
+  mtext(binNames, at = binNamePos, side = 2, cex = 0.8, las = 2, line = -0.1)
 
   abline(v = 0, lty = 2)
 
@@ -218,6 +211,5 @@ BRECIplot <- function(ras1 = NULL, ras2 = NULL, outFilename = NULL, saveToFile =
 
   if (saveToFile) dev.off()
 
-  ##cat("Marvellous!\n")
   invisible(TRUE)
 }

@@ -49,30 +49,29 @@ Make a BRECI plot from two rasters output by an ENM fitting process. Typically, 
 }
 \details{
 {
-The two rasters to be compared using this function MUST:
+The two rasters to be compared using this function \emph{MUST} have:
 \enumerate{
- \item Have the same extent and resolution (grid cell size); and,
+ \item the same extent and resolution (grid cell size); and,
 
- \item Have values in gridcells scaled in the same way. The rasters may be
+ \item values in gridcells scaled in the same way. The rasters may be
  normalised values such that the sum of grid cell values across the extent = 1
  (as in MaxEnt raw output) or adjusted so that values in a grid cell may range
- from 0 to 1 (as in MaxEnt logistic output).
+ from 0 to 1 (as in MaxEnt logistic and cloglog output, and many other modelling methods).
 }
 
-\emph{scaleFactor} determines the way in which values in bins are computed. Selecting 'ras1Bins' computes the value for a bin as a fraction of the number of pixels in the first raster. Values in a bin can therfore be greater than +/- 1, and are \emph{greatly} exaggerated in size.
+\emph{scaleFactor} determines the way in which values in bins are computed. Selecting 'ras1Bins' computes the value for a bin as a fraction of the number of pixels in the first raster. Values in a bin can therefore be greater than +/- 1, and are \emph{greatly} exaggerated in size.
 
 For the ith bin:
 
  \verb{    Bin_size(i) = [ras2_count(i) - ras1_count(i)]/ras1_count(i)}
 
-Selecting 'numCells' computes the difference in the number of cells in that bin as a proportion of the total number of cells in the raster extent.
+Selecting 'numCells' (the default value) computes the difference in the number of cells in that bin as a proportion of the total number of cells in the raster extent.
 
 For the ith bin:
 
   \verb{    Bin_size(i) = [ras2_count(i) - ras1_count(i)]/Total_number_cells}
 
-This function is based on code developed in April 2017 but the first approach to this kind of index was developed in 2009-2010. Code for that earlier method
-is no longer available.
+This function is based on code developed in April 2017 but the first approach to this kind of index was developed in 2009-2010.
 
 }
 }
@@ -82,7 +81,7 @@ data(breciRasters)
 # Default plot
 BRECIplot(ras1, ras2, plotTitle = "Acacia linifolia", outFilename = "~/testPlot.png")
 
-# A colour-blind freindly palette derived from info found here:
+# A colour-blind friendly palette derived from info found here:
 # http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
 # last accessed 2020-03-14
 colTable <- matrix(c(213,94,0,204,121,167,240,228,66,0,158,115,0,114,178), 5, 3, byrow = TRUE)/256
