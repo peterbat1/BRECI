@@ -19,9 +19,9 @@ BRECIplot(
 )
 }
 \arguments{
-\item{ras1}{Character. Full path to the baseline raster (earliest in time).}
+\item{ras1}{rasterLayer. Full path to the baseline raster (earliest in time).}
 
-\item{ras2}{Character. Full path to the future raster.}
+\item{ras2}{rasterLayer. Full path to the future raster.}
 
 \item{outFilename}{Character. Full path to the output file.}
 

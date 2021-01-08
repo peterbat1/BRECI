@@ -30,8 +30,8 @@
 #'
 #' Make a BRECI plot from two rasters output by an ENM fitting process. Typically, this is MaxEnt but any raster output from any ENM fitting method is acceptable provided that the rasters are on identical geometries and have values in gridcells scaled in the same way.
 #'
-#' @param ras1 Character. Full path to the baseline raster (earliest in time).
-#' @param ras2 Character. Full path to the future raster.
+#' @param ras1 rasterLayer. Full path to the baseline raster (earliest in time).
+#' @param ras2 rasterLayer. Full path to the future raster.
 #' @param outFilename Character. Full path to the output file.
 #' @param saveToFile Logical. Should the output plot be saved to file. DEFAULT = TRUE.
 #' @param plotTitle Character. Title to be give to the plot.
@@ -131,7 +131,7 @@ BRECIplot <- function(ras1 = NULL, ras2 = NULL, outFilename = NULL, saveToFile =
   ras2_cut <- cut.default(ras2_values, breaks = brks)
 
   # Cross-tabulation quickly count number of cells in each bin
-  xTab <- table(ras1_cut,ras2_cut)
+  xTab <- table(ras1_cut, ras2_cut)
 
   # Marginal sums in the cross-tabulation will let us see the numbers of cells
   # in each bin for each map

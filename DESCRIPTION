@@ -8,7 +8,10 @@ Authors@R:
            email = "peterdonaldwilson@gmail.com",
            comment = c(ORCID = "0000-0001-7375-0791"))
 Imports: raster,
-         png
+         png,
+         mathjaxr,
+         rasterVis
+RdMacros: mathjaxr
 Description: What the package does (one paragraph).
 License: GPL-3
 Encoding: UTF-8

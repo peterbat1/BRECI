@@ -2,3 +2,4 @@
 
 export(BRECIplot)
 export(cbPalette)
+export(gainLossMaps)
