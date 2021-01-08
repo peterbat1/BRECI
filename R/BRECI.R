@@ -157,7 +157,7 @@ BRECIplot <- function(ras1 = NULL, ras2 = NULL, outFilename = NULL, saveToFile =
 
   # If necessary, set output device for png image to be rendered to file:
   if (saveToFile) png(outFilename, width = plotWidth, height = plotHeight)
-  op <- par(oma = c(0, 0, 0, 0), mar = c(4, 3, 2, 0.1), mgp = c(2, 0.5, 0))
+  op <- par(oma = c(0, 0, 0, 0), mar = c(4, 3, 2.5, 0.1), mgp = c(2, 0.5, 0))
   # Make the plot:
   # Set xlim bounds:
   biggestDiff <- ifelse(max(z) < 1, 1, max(z))
