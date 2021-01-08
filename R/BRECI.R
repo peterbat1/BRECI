@@ -74,13 +74,18 @@
 #'
 #' @examples
 #' \dontrun{
-#' data(breciRasters)
 #'
 #' # Default plot
-#' BRECIplot(ras1, ras2, plotTitle = "Acacia linifolia", outFilename = "~/testPlot.png")
+#' BRECIplot(ras1, ras2, plotTitle = "Test ras1 and ras2", outFilename = "~/testPlot.png")
+#'
+#' # Stretch scaling to show relative changes more clearly
+#' BRECIplot(ras1, ras2, plotTitle = "Test ras1 and ras2 stretched", scaleFactor = "ras1Bins", saveToFile = FALSE)
+#'
+#' # An improved future environment
+#' BRECIplot(ras5, ras6, plotTitle = "Test ras5 and ras6", saveToFile = FALSE)
 #'
 #' # Use a colour-blind friendly palette:
-#' BRECIplot(ras1, ras2, plotTitle = "Acacia linifolia", outFilename = "~/testPlot.png", binCols = cbPalette())
+#' BRECIplot(ras5, ras6, plotTitle = "ras5 & ras6: friendly palette", saveToFile = FALSE, binCols = cbPalette())
 #' }
 #'
 BRECIplot <- function(ras1 = NULL, ras2 = NULL, outFilename = NULL, saveToFile = TRUE,

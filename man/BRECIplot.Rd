@@ -76,16 +76,19 @@ This function is based on code developed in April 2017 but the first approach to
 }
 }
 \examples{
-data(breciRasters)
+\dontrun{
 
 # Default plot
-BRECIplot(ras1, ras2, plotTitle = "Acacia linifolia", outFilename = "~/testPlot.png")
+BRECIplot(ras1, ras2, plotTitle = "Test ras1 and ras2", outFilename = "~/testPlot.png")
 
-# A colour-blind friendly palette derived from info found here:
-# http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
-# last accessed 2020-03-14
-colTable <- matrix(c(213,94,0,204,121,167,240,228,66,0,158,115,0,114,178), 5, 3, byrow = TRUE)/256
-niceColours <- rev(rgb(colTable))
-BRECIplot(ras1, ras2, plotTitle = "Acacia linifolia", outFilename = "~/testPlot.png", binCols = niceColours)
+# Stretch scaling to show relative changes more clearly
+BRECIplot(ras1, ras2, plotTitle = "Test ras1 and ras2 stretched", scaleFactor = "ras1Bins", saveToFile = FALSE)
+
+# An improved future environment
+BRECIplot(ras5, ras6, plotTitle = "Test ras5 and ras6", saveToFile = FALSE)
+
+# Use a colour-blind friendly palette:
+BRECIplot(ras5, ras6, plotTitle = "ras5 & ras6: friendly palette", saveToFile = FALSE, binCols = cbPalette())
+}
 
 }
