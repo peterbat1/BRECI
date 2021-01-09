@@ -1,5 +1,7 @@
 ---
 title: "BRECI"
+author: "Peter D. Wilson"
+date: "9 January 2021"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{BRECI}
@@ -14,7 +16,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+<style type="text/css">
+
+body, td {
+   font-size: 14px;
+}
+code.r{
+  font-size: 14px;
+}
+pre {
+  font-size: 14px
+}
+</style>
+
+```{r setup, echo = FALSE}
 library(BRECI)
 ```
 
@@ -48,60 +63,94 @@ Six simple *rasterLayer* objects are available in the *BRECI* package and we wil
 
 ### Little change:
 
-Maps ras1 and ras2 are and example of two rasters which have only minor differences across all bins.
+Maps _ras1_ and _ras2_ are an example of two rasters which have only minor differences across all bins.
 
-```{r echo = FALSE}
-##op <- par(mfrow = c(1,2), fin = c(7, 3.5))
-raster::plot(ras1, main = "ras1")
-raster::plot(ras2, main = "ras2")
-##par(op)
-```
+![](/home/peterw/R-scripts/BRECI-dev/Test_output/ras1.png)
+
+![](/home/peterw/R-scripts/BRECI-dev/Test_output/ras2.png)
 
 Here is the basic BRECI plot for these two maps:
 
-```{r echo = TRUE}
+```{r echo = TRUE, out.width="40%"}
 BRECIplot(ras1, ras2, saveToFile = FALSE)
 ```
 
-Although there is little change in the *overall* gain/loss in each bin or class, looking at the plots for the two rasters shows that there have been major spatial shifts in the distribution of suitability values. This is a useful insight which could help form more appropriate management responses. 
+Although there is little change in the *overall* gain/loss in each bin or class, looking at the plots for the two rasters shows that there have been major spatial shifts in the distribution of suitability values. This is a useful insight which could help form more appropriate management responses. We will see later how the function *gainLossMaps()* can help us understand and document the nature of these spatial changes.
 
 ### Big gains in suitability:
 
-```{r echo = FALSE}
-##op <- par(mfrow = c(1,2), fin = c(7, 3.5))
-raster::plot(ras3, main = "ras3")
-raster::plot(ras4, main = "ras4")
-##par(op)
-```
+These two rasters are an example of a major gain in suitability.
 
-```{r echo = TRUE}
+![](/home/peterw/R-scripts/BRECI-dev/Test_output/ras3.png)
+
+![](/home/peterw/R-scripts/BRECI-dev/Test_output/ras4.png)
+
+The BRECI plot confirms this but helps us understand that the rise in "Very high" and "High" suitability classes has come about by cells transitioning mostly from "Very low" suitability.
+
+```{r echo = TRUE, out.width="40%"}
 BRECIplot(ras3, ras4, saveToFile = FALSE)
 ```
 
 ### Big losses in suitability:
 
-```{r echo = FALSE}
-##op <- par(mfrow = c(1,2), fin = c(7, 3.5))
-raster::plot(ras5, main = "ras5")
-raster::plot(ras6, main = "ras6")
-##par(op)
-```
+In this pair of maps, there has been a substantial loss of high suitability areas. The BRECI plot suggests that losses have been fairly widespread within the "Medium" to "Very high" suitability classes.
 
-```{r echo = TRUE}
+![](/home/peterw/R-scripts/BRECI-dev/Test_output/ras5.png)
+
+![](/home/peterw/R-scripts/BRECI-dev/Test_output/ras6.png)
+```{r echo = TRUE, out.width="40%"}
 BRECIplot(ras5, ras6, saveToFile = FALSE)
 ```
 
 ### Gain/loss maps:
 
-A BRECI plot shows an overall trend in suitability scores between two raster. It is 'aspatial': it does not show *where* on the map transitions have occurred. That could be very important information - perhaps not so for our very small and simple examples, but it becomes a real challenge to make those assessments with out assistance on real-life ENM outputs. The function *gainLossMaps* can provide the needed spatial insights.
+A BRECI plot shows an overall trend in suitability scores between two raster. It is 'aspatial': it does not show *where* on the map transitions have occurred. That could be very important information. It is quiet obvious in our very small and simple examples where spatial changes have occurred, but it becomes a real challenge to make those assessments with out assistance using real-life ENM outputs. The function *gainLossMaps* can provide the needed spatial insights.
 
-```{r }
-gainLossMaps(ras3, ras4, saveToFile = FALSE)
+To generate the full suite of gain-loss plots we would use the following call:
+
+```{r eval = FALSE}
+gainLossMaps(ras1, ras2)
 
 ```
 
+Default settings for *saveToRaster* and *saveImages* are FALSE, so images are rendered to the standard graphics device. This allows users to review the plots before deciding on saving GIS-compatible raster files or png images. The function *gainLossMaps()* produces an overall view of areas of gains and losses (as separate overall gain and overall loss maps). It also produces a set of gain or loss pairwise transition maps for each transition.
 
+The full set of gain and loss plots is rather large and grows quite quickly with the number of classes or bins. For the default 5 classes or bins, there are 2 overall gain/loss maps plus up to 15 transition maps. For 6 classes or bins, the full set of maps can be as large as 22. The formula for the maximum number of transition maps, *k*,  is:
+
+|             $k = \sum_{i = 1}^{N - 1} N - i$
+
+where *N* is the number of classes or bins.
+
+The demonstrate how to use the gain-loss plots, we will look at a selection of outputs from the full set of plots produced by the function call:
+
+```{r eval = FALSE}
+gainLossMaps(ras1, ras2, outFolder = "/path/to/output_folder", saveImages = TRUE)
+
+```
+
+First, the overall plot of losses:
+
+![](/home/peterw/R-scripts/BRECI/data/Overall_loss_map.png)
+
+The loss map shows areas of the map in each class or bin which transitioned to a lower bin. For example, the "Very high" area represents cells coded as "Very high" on the first map which transitioned in the second map to one of the lower classes e.g. Very High to Medium, Very high to Low, and so on.
+
+This is useful information for managers and decision-makers, but might also be helpful to know which areas have experienced the greatest shifts; that is, those areas most threatened with change. This information is provided by the set of transition maps which break down changes into unique _*from-to*_ class transitions. For example, here is a transition map for "Very high" to "Medium":
+
+![](/home/peterw/R-scripts/BRECI/data/Loss_map_V._high_to_Med..png)
+
+In this map, the colour-coding shows the state of cells in first raster; that is, the class cells transitioned _*from*_ since we are showing losses.
+
+Gains are treated in similar way. Here is the overall gain map:
+
+![](/home/peterw/R-scripts/BRECI/data/Overall_gain_map.png)
+The colour-coding in this case shows the class that a cell transitioned _*to*_ in the second map. And, as with the loss maps we can look at individual transitions to gain a deeper of understanding of the changes. As an example, here is a plot showing cells which transitioned from  "Low" in the first map to "Medium" in the second map.
+
+![](/home/peterw/R-scripts/BRECI/data/Gain_map_Low_to_Med..png)
 
 ## Model performance and comparison
 
-**A BRECI plot does not measure or represent model quality or performance.**
+One of the most important tasks in fitting ENMs is ensuring that models are of the highest quality so that any decisions based on them are more likely to be appropriate and effective. This is an active area of research and the literature on choosing and interpreting model performance measures is already rich.
+
+Although it might be tempting to treat a BRECI plot as a method of model performance evaluation...
+
+> **A BRECI plot does not measure or represent model quality or performance.**

@@ -16,7 +16,8 @@
 #' @param binCols  Character. An array of standard R colour names or hexadecimal colour values.
 #' @param mapsToMake Character. Make 'both' gain and loss maps, just 'gain' maps, or just 'loss' maps.
 #' @param outFolder Character. Path to an output folder into which rasters will be written.
-#' @param saveToFile Logical. Create output files in the folder specified in \emph{outFolder}? Default is FALSE.
+#' @param saveToRaster Logical. Save rasters to files in the folder specified in \emph{outFolder}? Default is FALSE.
+#' @param saveImages Logical. Save images of rasters in png format in the folder specified in \emph{outFolder}? Default is FALSE.
 #'
 #' @details {
 #'
@@ -51,7 +52,9 @@ gainLossMaps <- function(ras1 = NULL, ras2 = NULL,
                          binNames = c("V. low", "Low", "Med.", "High", "V. high"),
                          binCols = c("dodgerblue", "darkolivegreen2", "gold1", "orange", "red"),
                          mapsToMake = "both",
-                         outFolder = NULL, saveToFile = FALSE)
+                         outFolder = NULL,
+                         saveToRaster = FALSE,
+                         saveImages = FALSE)
 {
   if ((is.null(ras1)) || (class(ras1) != "RasterLayer"))
     stop("An object of class 'RasterLayer' is required for parameter 'ras1'")
@@ -68,8 +71,11 @@ gainLossMaps <- function(ras1 = NULL, ras2 = NULL,
   if (!sp::identicalCRS(ras1, ras2))
     stop("Coordinate Reference System (CRS) of 'ras1' and 'ras2' must be identical")
 
-  if ((is.null(outFolder) || (outFolder == "")) && saveToFile)
-    stop("Parameter 'outFolder' must be given a value because 'saveToFile' = TRUE")
+  if ((is.null(outFolder) || (outFolder == "")) && saveToRaster)
+    stop("Parameter 'outFolder' must be given a value because 'saveToRaster' = TRUE")
+
+  if ((is.null(outFolder) || (outFolder == "")) && saveImages)
+    stop("Parameter 'outFolder' must be given a value because 'saveToRaster' = TRUE")
 
   if (!(mapsToMake %in% c("both", "loss", "gain")))
     stop("Parameter 'mapsToMake' must one of 'both', 'loss' or 'gain'")
@@ -94,115 +100,132 @@ gainLossMaps <- function(ras1 = NULL, ras2 = NULL,
 
   numClasses <- length(binNames)
 
-  if (mapsToMake %in% c("both", "loss"))
+  if (any(gainLoss < 0))
   {
-    # Loss rasters
-    # Overall loss
-    lossRas <- ras1
-    lossRas[goodCells] <- NA
-    lossCells <- which(gainLoss < 0)
-    lossRas[lossCells] <- rc1[lossCells]
-
-    if (saveToFile)
-      raster::writeRaster(lossRas, filename = file.path(outFolder, "Overall_loss_map.tif"))
-    else
+    if (mapsToMake %in% c("both", "loss"))
     {
-      #raster::plot(lossRas, main = "Loss raster")
-      thingy <- raster::ratify(lossRas)
-      rat <- raster::levels(thingy)[[1]]
-      rat[["stuff"]] <- binNames[rat$ID]
-      levels(thingy) <- rat
-      print(rasterVis::levelplot(thingy, col.regions = binCols[rat$ID],
-                      xlab = "", ylab = "",
-                      main = "Loss raster", maxpixels = 1e6))
-    }
+      # Loss rasters
+      # Overall loss
+      lossRas <- ras1
+      lossRas[goodCells] <- NA
+      lossCells <- which(gainLoss < 0)
+      lossRas[lossCells] <- rc1[lossCells]
 
-    # Class transition rasters for class LOSSES
-    for (fromClass in 2:numClasses)
-    {
-      for (toClass in 1:(fromClass - 1))
+      if (saveToRaster)
+        raster::writeRaster(lossRas, filename = file.path(outFolder, "Overall_loss_map.tif"))
+      else
       {
-        loss_class_ras <- ras1
-        loss_class_ras[goodCells] <- NA
-        lossCells2 <- intersect(which(rc1 == fromClass), which(rc2 == toClass))
-        if (length(lossCells2) > 0)
-        {
-          #cat(fromClass, "to", toClass, "*** boing\n")
-          loss_class_ras[lossCells2] <- 1
-          if (saveToFile)
-            raster::writeRaster(loss_class_ras, filename = file.path(outFolder, paste0("Loss_map_", gsub(" ", "_", paste0(binNames[fromClass], " to ", binNames[toClass])), ".tif")))
-          else
-          {
-            #raster::plot(loss_class_ras, main = paste0("Loss: ", binNames[fromClass], " to ", binNames[toClass]))
+        if (saveImages) grDevices::png(filename = file.path(outFolder, "Overall_loss_map.png"), width = 1024, height = 768, units = "px")
+        thingy <- raster::ratify(lossRas)
+        rat <- raster::levels(thingy)[[1]]
+        rat[["stuff"]] <- binNames[rat$ID]
+        levels(thingy) <- rat
+        print(rasterVis::levelplot(thingy, col.regions = binCols[rat$ID],
+                                   xlab = "", ylab = "",
+                                   main = "Loss raster", maxpixels = 1e6))
+        if (saveImages) dev.off()
+      }
 
-            loss_class_ras[lossCells2] <- fromClass
-            thingy <- raster::ratify(loss_class_ras)
-            rat <- raster::levels(thingy)[[1]]
-            rat[["stuff"]] <- binNames[fromClass]
-            levels(thingy) <- rat
-            print(rasterVis::levelplot(thingy, col.regions = binCols[fromClass],
-                            xlab = "", ylab = "",
-                            main = paste0("Loss: ", binNames[fromClass], " to ", binNames[toClass]),
-                            maxpixels = 1e6))
+      # Class transition rasters for class LOSSES
+      for (fromClass in 2:numClasses)
+      {
+        for (toClass in 1:(fromClass - 1))
+        {
+          loss_class_ras <- ras1
+          loss_class_ras[goodCells] <- NA
+          lossCells2 <- intersect(which(rc1 == fromClass), which(rc2 == toClass))
+          if (length(lossCells2) > 0)
+          {
+            #cat(fromClass, "to", toClass, "*** boing\n")
+            loss_class_ras[lossCells2] <- 1
+            if (saveToRaster)
+              raster::writeRaster(loss_class_ras, filename = file.path(outFolder, paste0("Loss_map_", gsub(" ", "_", paste0(binNames[fromClass], " to ", binNames[toClass])), ".tif")))
+            else
+            {
+              #raster::plot(loss_class_ras, main = paste0("Loss: ", binNames[fromClass], " to ", binNames[toClass]))
+              if (saveImages) grDevices::png(filename = file.path(outFolder, paste0("Loss_map_", gsub(" ", "_", paste0(binNames[fromClass], " to ", binNames[toClass])), ".png")),
+                                       width = 1024, height = 768, units = "px")
+              loss_class_ras[lossCells2] <- fromClass
+              thingy <- raster::ratify(loss_class_ras)
+              rat <- raster::levels(thingy)[[1]]
+              rat[["stuff"]] <- binNames[fromClass]
+              levels(thingy) <- rat
+              print(rasterVis::levelplot(thingy, col.regions = binCols[fromClass],
+                                         xlab = "", ylab = "",
+                                         main = paste0("Loss: ", binNames[fromClass], " to ", binNames[toClass]),
+                                         maxpixels = 1e6))
+              if (saveImages) dev.off()
+            }
           }
         }
       }
     }
   }
+  else
+    cat("All grid cells experienced gains: no loss maps can be produced\n")
 
-  if (mapsToMake %in% c("both", "gain"))
+  if (any(gainLoss > 0))
   {
-    # Gain rasters
-    # Overal gains
-    goodCells <- which(!is.na(ras1[]))
-    gainRas <- ras1
-    gainRas[goodCells] <- NA
-    gainCells <- which(gainLoss > 0)
-    gainRas[gainCells] <- rc1[gainCells]
-
-    if (saveToFile)
-      raster::writeRaster(gainRas, filename = file.path(outFolder, "Overall_gain_map.tif"))
-    else
+    if (mapsToMake %in% c("both", "gain"))
     {
-      #raster::plot(gainRas, main = "Gain raster")
-      thingy <- raster::ratify(gainRas)
-      rat <- raster::levels(thingy)[[1]]
-      rat[["stuff"]] <- binNames[rat$ID]
-      levels(thingy) <- rat
-      print(rasterVis::levelplot(thingy, col.regions = binCols[rat$ID],
-                      xlab = "", ylab = "",
-                      main = "Gain raster", maxpixels = 1e6))
-    }
+      # Gain rasters
+      # Overal gains
+      goodCells <- which(!is.na(ras1[]))
+      gainRas <- ras1
+      gainRas[goodCells] <- NA
+      gainCells <- which(gainLoss > 0)
+      gainRas[gainCells] <- rc2[gainCells]
 
-    # Class transition rasters for class GAINS
-    for (fromClass in 1:(numClasses - 1))
-    {
-      for (toClass in (fromClass + 1):numClasses)
+      if (saveToRaster)
+        raster::writeRaster(gainRas, filename = file.path(outFolder, "Overall_gain_map.tif"))
+      else
       {
-        gain_class_ras <- ras1
-        gain_class_ras[goodCells] <- NA
-        gainCells2 <- intersect(which(rc1 == fromClass), which(rc2 == toClass))
-        if (length(gainCells2) > 0)
-        {
-          #cat(fromClass, "to", toClass, "*** boing\n")
-          gain_class_ras[gainCells2] <- 1
-          if (saveToFile)
-            raster::writeRaster(gain_class_ras, filename = file.path(outFolder, paste0("Gain_map_", gsub(" ", "_", paste0(binNames[fromClass], " to ", binNames[toClass])), ".tif")))
-          else
-          {
-            #raster::plot(gain_class_ras, main = paste0("Gain: ", binNames[fromClass], " to ", binNames[toClass]))
-            gain_class_ras[gainCells2] <- toClass
-            thingy <- raster::ratify(gain_class_ras)
-            rat <- raster::levels(thingy)[[1]]
-            rat[["stuff"]] <- binNames[toClass]
-            levels(thingy) <- rat
-            print(rasterVis::levelplot(thingy, col.regions = binCols[toClass],
-                            xlab = "", ylab = "",
-                            main = paste0("Gain: ", binNames[fromClass], " to ", binNames[toClass]), maxpixels = 1e6))
+        if (saveImages) grDevices::png(filename = file.path(outFolder, "Overall_gain_map.png"), width = 1024, height = 768, units = "px")
+        thingy <- raster::ratify(gainRas)
+        rat <- raster::levels(thingy)[[1]]
+        rat[["stuff"]] <- binNames[rat$ID]
+        levels(thingy) <- rat
+        print(rasterVis::levelplot(thingy, col.regions = binCols[rat$ID],
+                                   xlab = "", ylab = "",
+                                   main = "Gain raster", maxpixels = 1e6))
+        if (saveImages) dev.off()
+      }
 
+      # Class transition rasters for class GAINS
+      for (fromClass in 1:(numClasses - 1))
+      {
+        for (toClass in (fromClass + 1):numClasses)
+        {
+          gain_class_ras <- ras1
+          gain_class_ras[goodCells] <- NA
+          gainCells2 <- intersect(which(rc1 == fromClass), which(rc2 == toClass))
+          if (length(gainCells2) > 0)
+          {
+            #cat(fromClass, "to", toClass, "*** boing\n")
+            gain_class_ras[gainCells2] <- 1
+            if (saveToRaster)
+              raster::writeRaster(gain_class_ras, filename = file.path(outFolder, paste0("Gain_map_", gsub(" ", "_", paste0(binNames[fromClass], " to ", binNames[toClass])), ".tif")))
+            else
+            {
+              if (saveImages) grDevices::png(filename = file.path(outFolder, paste0("Gain_map_", gsub(" ", "_", paste0(binNames[fromClass], " to ", binNames[toClass])), ".png")),
+                                       width = 1024, height = 768, units = "px")
+
+              #raster::plot(gain_class_ras, main = paste0("Gain: ", binNames[fromClass], " to ", binNames[toClass]))
+              gain_class_ras[gainCells2] <- toClass
+              thingy <- raster::ratify(gain_class_ras)
+              rat <- raster::levels(thingy)[[1]]
+              rat[["stuff"]] <- binNames[toClass]
+              levels(thingy) <- rat
+              print(rasterVis::levelplot(thingy, col.regions = binCols[toClass],
+                                         xlab = "", ylab = "",
+                                         main = paste0("Gain: ", binNames[fromClass], " to ", binNames[toClass]), maxpixels = 1e6))
+              if (saveImages) dev.off()
+            }
           }
         }
       }
     }
   }
+  else
+    cat("All grid cells experienced losses: no gain maps can be produced\n")
 }

@@ -12,7 +12,7 @@ Imports: raster,
          mathjaxr,
          rasterVis
 RdMacros: mathjaxr
-Description: What the package does (one paragraph).
+Description: BRECI provides functions to represent and explore pairs of ecological niche model (or species distribution model) raster maps by showing transitions in suitability values. Detailed maps of gain or loss transitions can be produced to assist the development of conservation responses.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

@@ -12,7 +12,8 @@ gainLossMaps(
   binCols = c("dodgerblue", "darkolivegreen2", "gold1", "orange", "red"),
   mapsToMake = "both",
   outFolder = NULL,
-  saveToFile = FALSE
+  saveToRaster = FALSE,
+  saveImages = FALSE
 )
 }
 \arguments{
@@ -30,7 +31,9 @@ gainLossMaps(
 
 \item{outFolder}{Character. Path to an output folder into which rasters will be written.}
 
-\item{saveToFile}{Logical. Create output files in the folder specified in \emph{outFolder}? Default is FALSE.}
+\item{saveToRaster}{Logical. Save rasters to files in the folder specified in \emph{outFolder}? Default is FALSE.}
+
+\item{saveImages}{Logical. Save images of rasters in png format in the folder specified in \emph{outFolder}? Default is FALSE.}
 }
 \description{
 Generate maps for overall gain or loss and maps showing each class transition
