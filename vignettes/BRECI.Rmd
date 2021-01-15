@@ -113,7 +113,7 @@ gainLossMaps(ras1, ras2)
 
 ```
 
-Default settings for *saveToRaster* and *saveImages* are FALSE, so images are rendered to the standard graphics device. This allows users to review the plots before deciding on saving GIS-compatible raster files or png images. The function *gainLossMaps()* produces an overall view of areas of gains and losses (as separate overall gain and overall loss maps). It also produces a set of gain or loss pairwise transition maps for each transition.
+Default settings for parameters *saveToRaster* and *saveImages* in the function call are FALSE, so images are rendered to the standard graphics device. This allows users to review the plots before deciding on saving GIS-compatible raster files or png images. The function *gainLossMaps()* produces an overall view of areas of gains and losses (as separate overall gain and overall loss maps). It also produces a set of gain or loss pairwise transition maps for each transition.
 
 The full set of gain and loss plots is rather large and grows quite quickly with the number of classes or bins. For the default 5 classes or bins, there are 2 overall gain/loss maps plus up to 15 transition maps. For 6 classes or bins, the full set of maps can be as large as 22. The formula for the maximum number of transition maps, *k*,  is:
 
