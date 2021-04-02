@@ -9,6 +9,6 @@ The purpose of the package is to help you communicate how two rasters differ. It
 
 Ensure that the R-package devtools is available in your local R installation. In the R console type the following:
 ```
-library(devtools)
+library(remotes)
 install_github("peterbat1/BRECI")
 ```
