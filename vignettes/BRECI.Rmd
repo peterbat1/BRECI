@@ -1,7 +1,7 @@
 ---
 title: "BRECI"
 author: "Peter D. Wilson"
-date: "9 January 2021"
+date: "19 November 2021"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{BRECI}
@@ -31,6 +31,14 @@ pre {
 
 ```{r setup, echo = FALSE}
 library(BRECI)
+
+ras1 <- raster::raster("/home/peterw/R-scripts/BRECI-dev/Test_data/ras1.tif")
+ras2 <- raster::raster("/home/peterw/R-scripts/BRECI-dev/Test_data/ras2.tif")
+ras3 <- raster::raster("/home/peterw/R-scripts/BRECI-dev/Test_data/ras3.tif")
+ras4 <- raster::raster("/home/peterw/R-scripts/BRECI-dev/Test_data/ras4.tif")
+ras5 <- raster::raster("/home/peterw/R-scripts/BRECI-dev/Test_data/ras5.tif")
+ras6 <- raster::raster("/home/peterw/R-scripts/BRECI-dev/Test_data/ras6.tif")
+
 ```
 
 # Binned Relative Environmental Change Index (BRECI)
@@ -41,7 +49,7 @@ Ecological niche models (ENMs) are now widely used in conservation and assessmen
 
 A frequent aspect using this class of model is to contrast the nature of suitable environmental conditions at two times (e.g. climate change impacts), or in two locations (e.g. potential impact of invasive species). The outputs from these models are typically raster maps of suitability scores. There are many avenues to compare and contrast the differences between two model output maps but they are often statistical scores which makes it challenging to fully appreciate the nature of differences between times or regions. Single statistical scores also make it difficult to understand the implications difference may have for management decisions, or their influences on population genetic or evolutionary processes.
 
-The purpose of BRECI is to provide a simple but informative graphical representation of differences between two raster maps. This vignette is to demonstrate the use of the functions *BRECIplot()* and *gainLossMaps*, to produce effective graphics to assist in the interpretation of differences between two raster maps.
+The purpose of BRECI is to provide a simple but informative graphical representation of differences between two raster maps. This vignette is to demonstrate the use of the functions *BRECIplot()* and *gainLossMaps()*, to produce effective graphics to assist in the interpretation of differences between two raster maps.
 
 ## Basic requirements
 
@@ -130,22 +138,22 @@ gainLossMaps(ras1, ras2, outFolder = "/path/to/output_folder", saveImages = TRUE
 
 First, the overall plot of losses:
 
-![](/home/peterw/R-scripts/BRECI/data/Overall_loss_map.png)
+![](/home/peterw/R-scripts/BRECI-dev/Test_output/Overall_loss_map.png)
 
 The loss map shows areas of the map in each class or bin which transitioned to a lower bin. For example, the "Very high" area represents cells coded as "Very high" on the first map which transitioned in the second map to one of the lower classes e.g. Very High to Medium, Very high to Low, and so on.
 
 This is useful information for managers and decision-makers, but might also be helpful to know which areas have experienced the greatest shifts; that is, those areas most threatened with change. This information is provided by the set of transition maps which break down changes into unique _*from-to*_ class transitions. For example, here is a transition map for "Very high" to "Medium":
 
-![](/home/peterw/R-scripts/BRECI/data/Loss_map_V._high_to_Med..png)
+![](/home/peterw/R-scripts/BRECI-dev/Test_output/Loss_map_V._high_to_Med.png)
 
 In this map, the colour-coding shows the state of cells in first raster; that is, the class cells transitioned _*from*_ since we are showing losses.
 
 Gains are treated in similar way. Here is the overall gain map:
 
-![](/home/peterw/R-scripts/BRECI/data/Overall_gain_map.png)
+![](/home/peterw/R-scripts/BRECI-dev/Test_output/Overall_gain_map.png)
 The colour-coding in this case shows the class that a cell transitioned _*to*_ in the second map. And, as with the loss maps we can look at individual transitions to gain a deeper of understanding of the changes. As an example, here is a plot showing cells which transitioned from  "Low" in the first map to "Medium" in the second map.
 
-![](/home/peterw/R-scripts/BRECI/data/Gain_map_Low_to_Med..png)
+![](/home/peterw/R-scripts/BRECI-dev/Test_output/Gain_map_Low_to_Med.png)
 
 ## Model performance and comparison
 
