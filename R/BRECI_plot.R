@@ -72,8 +72,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' data(ras1)
-#' data(ras2)
+#' # Load first raster:
+#' ### ras1 <- raster("/path/to/ras1.tif")
+#'
+#' # Load second raster:
+#' ### ras2 <- raster("/path/to/ras2.tif")
 #'
 #' # Default plot
 #' BRECIplot(ras1, ras2, plotTitle = "Test ras1 and ras2", outFilename = "~/testPlot.png")
