@@ -7,8 +7,8 @@ The purpose of the package is to help you communicate how two rasters differ. It
 
 ## Installing from this GitHub repository
 
-Ensure that the R-package devtools is available in your local R installation. In the R console type the following:
+Ensure that the R-package remotes is available in your local R installation. In the R console type the following:
 ```
-library(devtools)
+library(remotes)
 install_github("peterbat1/BRECI")
 ```
