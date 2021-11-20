@@ -15,6 +15,8 @@
 #' @param binNames Character. An array of names assigned to the bins.
 #' @param binCols  Character. An array of standard R colour names or hexadecimal colour values.
 #' @param mapsToMake Character. Make 'both' gain and loss maps, just 'gain' maps, or just 'loss' maps.
+#' @param xLabel Character. Label for the map X-coordinate axis.
+#' @param yLabelCharacter. Label for the map Y-coordinate axis.
 #' @param outFolder Character. Path to an output folder into which rasters will be written.
 #' @param saveToRaster Logical. Save rasters to files in the folder specified in \emph{outFolder}? Default is FALSE.
 #' @param saveImages Logical. Save images of rasters in png format in the folder specified in \emph{outFolder}? Default is FALSE.
@@ -52,6 +54,8 @@ gainLossMaps <- function(ras1 = NULL, ras2 = NULL,
                          binNames = c("V. low", "Low", "Med.", "High", "V. high"),
                          binCols = c("dodgerblue", "darkolivegreen2", "gold1", "orange", "red"),
                          mapsToMake = "both",
+                         xLabel = "X",
+                         yLabel = "Y",
                          outFolder = NULL,
                          saveToRaster = FALSE,
                          saveImages = FALSE)
@@ -121,7 +125,7 @@ gainLossMaps <- function(ras1 = NULL, ras2 = NULL,
         rat[["stuff"]] <- binNames[rat$ID]
         levels(thingy) <- rat
         print(rasterVis::levelplot(thingy, col.regions = binCols[rat$ID],
-                                   xlab = "", ylab = "",
+                                   xlab = xLabel, ylab = yLabel,
                                    main = "Loss raster", maxpixels = 1e6))
         if (saveImages) dev.off()
       }
@@ -151,7 +155,7 @@ gainLossMaps <- function(ras1 = NULL, ras2 = NULL,
               rat[["stuff"]] <- binNames[fromClass]
               levels(thingy) <- rat
               print(rasterVis::levelplot(thingy, col.regions = binCols[fromClass],
-                                         xlab = "", ylab = "",
+                                         xlab = xLabel, ylab = yLabel,
                                          main = paste0("Loss: ", binNames[fromClass], " to ", binNames[toClass]),
                                          maxpixels = 1e6))
               if (saveImages) dev.off()
@@ -186,7 +190,7 @@ gainLossMaps <- function(ras1 = NULL, ras2 = NULL,
         rat[["stuff"]] <- binNames[rat$ID]
         levels(thingy) <- rat
         print(rasterVis::levelplot(thingy, col.regions = binCols[rat$ID],
-                                   xlab = "", ylab = "",
+                                   xlab = xLabel, ylab = yLabel,
                                    main = "Gain raster", maxpixels = 1e6))
         if (saveImages) dev.off()
       }
@@ -217,7 +221,7 @@ gainLossMaps <- function(ras1 = NULL, ras2 = NULL,
               rat[["stuff"]] <- binNames[toClass]
               levels(thingy) <- rat
               print(rasterVis::levelplot(thingy, col.regions = binCols[toClass],
-                                         xlab = "", ylab = "",
+                                         xlab = xLabel, ylab = yLabel,
                                          main = paste0("Gain: ", binNames[fromClass], " to ", binNames[toClass]), maxpixels = 1e6))
               if (saveImages) dev.off()
             }

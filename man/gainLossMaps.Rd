@@ -11,6 +11,8 @@ gainLossMaps(
   binNames = c("V. low", "Low", "Med.", "High", "V. high"),
   binCols = c("dodgerblue", "darkolivegreen2", "gold1", "orange", "red"),
   mapsToMake = "both",
+  xLabel = "X",
+  yLabel = "Y",
   outFolder = NULL,
   saveToRaster = FALSE,
   saveImages = FALSE
@@ -29,11 +31,15 @@ gainLossMaps(
 
 \item{mapsToMake}{Character. Make 'both' gain and loss maps, just 'gain' maps, or just 'loss' maps.}
 
+\item{xLabel}{Character. Label for the map X-coordinate axis.}
+
 \item{outFolder}{Character. Path to an output folder into which rasters will be written.}
 
 \item{saveToRaster}{Logical. Save rasters to files in the folder specified in \emph{outFolder}? Default is FALSE.}
 
 \item{saveImages}{Logical. Save images of rasters in png format in the folder specified in \emph{outFolder}? Default is FALSE.}
+
+\item{yLabelCharacter.}{Label for the map Y-coordinate axis.}
 }
 \description{
 Generate maps for overall gain or loss and maps showing each class transition
